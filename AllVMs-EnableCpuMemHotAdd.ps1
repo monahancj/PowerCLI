@@ -30,7 +30,8 @@ function EnableCPUandRAM ($gvVM) {
   $extra2.Key="vcpu.hotadd"  
   $extra2.Value="true"  
   $vmConfigSpec.extraconfig += $extra2  
-  $gvVM.Extensiondata.ReconfigVM($vmConfigSpec)  
+#  $gvVM.Extensiondata.ReconfigVM($vmConfigSpec)  
+  $gvVM.ReconfigVM($vmConfigSpec)  
 }
 
 function EnableRAM ($gvVM) {
@@ -39,39 +40,32 @@ function EnableRAM ($gvVM) {
   $extra1.Key="mem.hotadd"  
   $extra1.Value="true"  
   $vmConfigSpec.extraconfig += $extra1  
-  $gvVM.Extensiondata.ReconfigVM($vmConfigSpec)  
+#  $gvVM.Extensiondata.ReconfigVM($vmConfigSpec)  
+  $gvVM.ReconfigVM($vmConfigSpec)  
 }
 
 
-$AllVMs = Get-VM *jump* | Sort-Object | Get-View
+# $AllVMs = Get-VM devb* | Sort-Object | Get-View
 $AllVMs = Get-VM | Sort-Object | Get-View
 $AllVMs | Measure-Object
+pause; sleep 3; pause
 
+Write-Output "`n$(Get-Date)- VM`t`tGuestId`tCpuHotAddEnabled`tMemoryHotAddEnabled"
 foreach ($VM in $AllVMs) {
+	Write-Output "`n$(Get-Date)- $($VM.Config.Name)`t$($VM.Config.GuestId)`t$($VM.Config.CpuHotAddEnabled)`t$($VM.Config.MemoryHotAddEnabled)"
 	switch ($VM.Guest.GuestId) {
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if ($VM.Config.MemoryHotAddEnabled -eq $false) { $VM.Name; EnableRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'windows7_64Guest'      { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'windows7Server64Guest' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'windows8Server64Guest' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'rhel4_64Guest' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
-		'' { $VM; if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { $VM.Name; EnableCPUandRAM -gvVM (Get-View -VIObject $VM.Name) } }
+		'windows7_64Guest'      { if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'windows7Server64Guest' { if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'windows8Server64Guest' { if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'centosGuest'           { if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'centos64Guest'         { if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'rhel4_64Guest'         { if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'rhel5_64Guest' 		{ if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'rhel6Guest' 			{ if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'rhel6_64Guest' 		{ if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'rhel7Guest' 			{ if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		'rhel7_64Guest' 		{ if (($VM.Config.CpuHotAddEnabled -eq $false) -or ($VM.Config.MemoryHotAddEnabled -eq $false)) { Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM } }
+		default					{ Write-Output "$($VM.Name) Updated"; EnableCPUandRAM -gvVM $VM }
 	}
 }
 
@@ -86,17 +80,24 @@ Name         GuestFullName                             CpuHotAddEnabled CpuHotRe
 ----         -------------                             ---------------- ------------------- ------------------- ------------------
 cjm0         Microsoft Windows Server 2012 (64-bit)               False               False               False
 cjm0-updated Microsoft Windows Server 2012 (64-bit)                True               False                True
+
 cjm1         Microsoft Windows Server 2008 R2 (64-bit)            False               False               False
 cjm1-updated Microsoft Windows Server 2008 R2 (64-bit)             True               False                True
+
 cjm2         Microsoft Windows Server 2003 (64-bit)               False               False               False
 cjm2-updated Microsoft Windows Server 2003 (64-bit)               False               False                True
+
 cjm3         CentOS 4/5/6 (32-bit)                                False               False               False
 cjm3-updated CentOS 4/5/6 (32-bit)                                 True               False                True
+
 cjm4         Red Hat Enterprise Linux 5 (32-bit)                  False               False               False
 cjm4-updated Red Hat Enterprise Linux 5 (32-bit)                  False               False               False
+
 cjm5         Red Hat Enterprise Linux 5 (64-bit)                  False               False               False
 cjm5-updated Red Hat Enterprise Linux 5 (64-bit)                   True               False                True
+
 cjm6         Red Hat Enterprise Linux 6 (32-bit)                  False               False               False
 cjm6-updated Red Hat Enterprise Linux 6 (32-bit)                   True               False                True
+
 #>
 
