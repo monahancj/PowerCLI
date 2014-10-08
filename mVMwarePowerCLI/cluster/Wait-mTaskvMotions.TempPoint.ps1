@@ -41,7 +41,7 @@
 		
 		
 	.LINK
-		https://github.com/monahancj/PowerCLI
+		http://mongit201.be.monster.com/chrism/virtech/blob/master/Repo/Wait-mTaskvMotions.ps1
 #>
 
 function Wait-mTaskvMotions {

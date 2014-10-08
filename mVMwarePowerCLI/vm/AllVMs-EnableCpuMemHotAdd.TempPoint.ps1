@@ -10,7 +10,7 @@
 .Notes
    <Information that does not fit easily into the other sections>
 .Link
-   https://github.com/monahancj/PowerCLI
+   <Links to other Help topics and Web sites of interest>
 #>
 
 # 1- put in switch logic to pick out OS
