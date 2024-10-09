@@ -1,4 +1,5 @@
-﻿<#
+﻿function Wait-mVMPowerOff {
+	<#
     .SYNOPSIS
         Function will loop and sleep until the VM is powered off.
 
@@ -23,35 +24,31 @@
     .LINK
 		https://opsgit.monster.com/_CMonahan/virtech/blob/master/Repo/Modules/mVirtech/mVMwarePowerCLI/vm/Wait-mVMPoweroff.ps1
 #>
-
-if (!(Get-PSSnapin -Name VMware.VimAutomation.Core -Registered)) { Add-PSSnapin -Name VMware.VimAutomation.Core }
-function Wait-mVMPowerOff
-{
 	
 	[CmdletBinding(
 				   SupportsShouldProcess = $false,
 				   ConfirmImpact = "None"
 				   )]
-	Param (
-		[Parameter(Mandatory = $true)]  $VM,
-		[Parameter(Mandatory = $false)] $WaitPeriod=10
+	param (
+		[Parameter(Mandatory = $true)]$VM,
+		[Parameter(Mandatory = $false)]$WaitPeriod = 10
 	)
 	
-	Begin 	{
+	begin {
 		
 	} # end Begin Block
 	
-	Process 	{
-		while ( (Get-VM -Name $VM).PowerState -ne 'PoweredOff' ) {
+	process {
+		while ((Get-VM -Name $VM).PowerState -ne 'PoweredOff') {
 			Write-Output "$(Get-Date)- $((Get-VM -Name $VM).Name) is $((Get-VM -Name $VM).PowerState)"
 			Start-Sleep $WaitPeriod
 		}
 		
 	} # end Process Block
 	
-	End	{
+	end {
 		Write-Output "$(Get-Date)- $((Get-VM -Name $VM).Name) is $((Get-VM -Name $VM).PowerState)"
-		[System.GC]::Collect()  # .Net memory gabarge collection
+		[System.GC]::Collect() # .Net memory gabarge collection
 	} # end End Block
 	
 } # end Function
