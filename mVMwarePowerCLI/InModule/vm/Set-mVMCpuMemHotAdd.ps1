@@ -1,4 +1,5 @@
-﻿<#
+﻿function Set-mVMCpuMemHotAdd {
+	<#
     .SYNOPSIS
         A brief description of the function or script. This keyword can be used
         only once in each topic.
@@ -55,16 +56,12 @@ ToDo
         with "http" or "https".
 
 #>
-
-
-
-Function Set-mVMCpuMemHotAdd {
 	
 	[cmdletbinding(SupportsShouldProcess = $true)]
 	param (
-	[Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]$VM,
-	[Parameter(Position = 1, Mandatory = $false, ValueFromPipeline = $false)][switch]$CPU,
-	[Parameter(Position = 2, Mandatory = $false, ValueFromPipeline = $false)][switch]$Memory
+		[Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]$VM,
+		[Parameter(Position = 1, Mandatory = $false, ValueFromPipeline = $false)][boolean]$CPU,
+		[Parameter(Position = 2, Mandatory = $false, ValueFromPipeline = $false)][boolean]$Memory
 	)
 	
 	begin {
@@ -75,48 +72,59 @@ Function Set-mVMCpuMemHotAdd {
 	
 	process {
 		
-		$vmview = Get-vm $vm | Get-View
-		$vmConfigSpec = New-Object VMware.Vim.VirtualMachineConfigSpec
-		
-		if ($CPU -or $Memory) {
+		if (($CPU -or !$CPU) -or ($Memory -or !$Memory)) {
+			$vmview = Get-vm $vm | Get-View
+			$vmConfigSpec = New-Object VMware.Vim.VirtualMachineConfigSpec
 			
-			$vmview.config | Select-Object @{ n = 'TimeStamp'; e = { (Get-Date) } }, @{ n = 'When'; e = { 'Before' } }, Name, CpuHotAddEnabled, CpuHotRemoveEnabled, MemoryHotAddEnabled, HotPlugMemoryLimit | Format-Table -AutoSize
+			$vmview.config | Select-Object @{ n = 'TimeStamp'; e = { (Get-Date) } }, @{ n = 'When'; e = { 'Before Change' } }, Name, CpuHotAddEnabled, CpuHotRemoveEnabled, MemoryHotAddEnabled, HotPlugMemoryLimit | Format-Table -AutoSize
 			
-			if ($CPU) {
-				Write-Verbose "$(Get-Date)- Enabling CPU Hot Add."
+			if ($CPU -or !$CPU) {
 				$extra = New-Object VMware.Vim.optionvalue
 				$extra.Key = "vcpu.hotadd"
-				$extra.Value = "true"
+				if ($CPU) {
+					Write-Verbose "$(Get-Date)- Enabling CPU Hotplug."
+					$extra.Value = "true"
+				}
+				elseif (!$CPU) {
+					Write-Verbose "$(Get-Date)- Disabling CPU Hotplug."
+					$extra.Value = "false"
+				}
 				$vmConfigSpec.extraconfig += $extra
 				$vmview.ReconfigVM($vmConfigSpec)
 			}
 			
-			if ($Memory) {
-				Write-Verbose "$(Get-Date)- Enabling Memory Hot Add."
+			if ($Memory -or !$Memory) {
 				$extra = New-Object VMware.Vim.optionvalue
 				$extra.Key = "mem.hotadd"
-				$extra.Value = "true"
+				if ($Memory) {
+					Write-Verbose "$(Get-Date)- Enabling Mem Hot Add."
+					$extra.Value = "true"
+				}
+				elseif (!$Memory) {
+					Write-Verbose "$(Get-Date)- Disabling Mem Hot Add."
+					$extra.Value = "false"
+				}
 				$vmConfigSpec.extraconfig += $extra
 				$vmview.ReconfigVM($vmConfigSpec)
 			}
+			
 		}
-		else { Write-Output "$(Get-Date)- Neither parameter -CPU or -Memory present." }
+		else { Write-Output "$(Get-Date)- Neither parameter -CPU or -Memory was set." }
 		
 		
 	} #end of the process block
 	
 	end {
-		Write-Output "Reminder- Settings will not take effect until the VM is powered off.  An OS level reboot will not change the setting."		
+		Write-Output "Reminder- Settings will not take effect until the VM is powered off.  An OS level reboot will not change the setting."
 		
-		Remove-Variable VM, CPU, Memory
+		Remove-Variable VM, CPU, Memory, vmConfigSpec, vmview, extra -ErrorAction SilentlyContinue -WhatIf:$false # Using -WhatIf:$false to suppress unnecessary messages when a calling function has -Whatif:$true enabled.
 		[System.GC]::Collect() # Memory cleanup
 		
 	} #end of the end block
-	
-} # end function
-
 <# Comment History
 YYYMMDD username- 3rd comment.
 YYYMMDD username- 2nd comment.
 YYYMMDD username- 1st comment.
-#>
+#>	
+} # end function
+
